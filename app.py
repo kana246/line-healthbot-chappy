@@ -22,7 +22,7 @@ handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
 # Googleスプレッドシート設定
 SPREADSHEET_ID = '1mmdxzloT6rOmx7SiVT4X2PtmtcsBxivcHSoMUvjDCqc'  # あなたのスプレッドシートIDをセット
-range='Sheet1!A1:C1'
+range='Sheet1!A1:C1',
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # 環境変数にJSON文字列が入っている想定
