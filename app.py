@@ -1,3 +1,4 @@
+pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -40,4 +41,37 @@ def handle_message(event):
 @app.route("/", methods=["GET"])
 def home():
     return "LINE Bot is running!"
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+
+# スプレッドシートID（URLの一部）
+SPREADSHEET_ID = 'あなたのスプレッドシートID'
+
+# 認証スコープ
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+# サービスアカウント認証
+credentials = service_account.Credentials.from_service_account_file(
+    'credentials.json',
+    scopes=SCOPES
+)
+
+service = build('sheets', 'v4', credentials=credentials)
+
+sheet = service.spreadsheets()
+
+# 例：体重データをシートに追加する関数
+def append_weight_data(user_id, date, weight):
+    values = [[user_id, date, weight]]
+    body = {
+        'values': values
+    }
+    result = sheet.values().append(
+        spreadsheetId=SPREADSHEET_ID,
+        range='Sheet1!A:C',  # 書き込み範囲
+        valueInputOption='USER_ENTERED',
+        insertDataOption='INSERT_ROWS',
+        body=body
+    ).execute()
+    print(f"{result.get('updates').get('updatedRows')} rows appended.")
 
